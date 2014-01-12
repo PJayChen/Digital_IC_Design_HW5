@@ -1,0 +1,8 @@
+C:/Users/P/Documents/GitHub/Digital_IC_Design_HW5/pre-sim/testfixture.v {1 {vlog -work work C:/Users/P/Documents/GitHub/Digital_IC_Design_HW5/pre-sim/testfixture.v
+Model Technology ModelSim ALTERA vlog 10.1d Compiler 2012.11 Nov  2 2012
+-- Compiling module test
+
+Top level modules:
+	test
+
+} {} {}}

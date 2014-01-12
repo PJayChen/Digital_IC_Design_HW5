@@ -1,0 +1,357 @@
+$date
+	Mon Jan 13 00:49:00 2014
+$end
+$version
+	ModelSim Version 10.1d
+$end
+$timescale
+	10ps
+$end
+$scope module test $end
+$var parameter 48 ! INPUT_DATA $end
+$var parameter 80 " EXPECT_DATA $end
+$var reg 1 # clk $end
+$var reg 1 $ reset $end
+$var reg 1 % nt $end
+$var reg 8 & xi [7:0] $end
+$var reg 8 ' yi [7:0] $end
+$var wire 1 ( xo [7] $end
+$var wire 1 ) xo [6] $end
+$var wire 1 * xo [5] $end
+$var wire 1 + xo [4] $end
+$var wire 1 , xo [3] $end
+$var wire 1 - xo [2] $end
+$var wire 1 . xo [1] $end
+$var wire 1 / xo [0] $end
+$var wire 1 0 yo [7] $end
+$var wire 1 1 yo [6] $end
+$var wire 1 2 yo [5] $end
+$var wire 1 3 yo [4] $end
+$var wire 1 4 yo [3] $end
+$var wire 1 5 yo [2] $end
+$var wire 1 6 yo [1] $end
+$var wire 1 7 yo [0] $end
+$var wire 1 8 po $end
+$var wire 1 9 busy $end
+$var integer 32 : i $end
+$var integer 32 ; j $end
+$var integer 32 < k $end
+$var integer 32 = l $end
+$var integer 32 > m $end
+$var integer 32 ? out_f $end
+$var integer 32 @ err $end
+$var integer 32 A pattern_num $end
+$var integer 32 B total_num $end
+$var integer 32 C total_cycle_num $end
+$var integer 32 D a $end
+$var integer 32 E b $end
+$var integer 32 F c $end
+$var integer 32 G d $end
+$var reg 16 H data_tmp_expect [15:0] $end
+$var reg 16 I data_tmp_i [15:0] $end
+$var reg 16 J data_tmp_i1 [15:0] $end
+$var reg 16 K data_tmp_i2 [15:0] $end
+$var reg 16 L data_tmp_i3 [15:0] $end
+$scope module top $end
+$var parameter 32 M S0_RST $end
+$var parameter 32 N S1_WAIT $end
+$var parameter 32 O S2_START $end
+$var parameter 32 P S3_RX_ENDPOINT $end
+$var parameter 32 Q S4_PREPARE_CAL $end
+$var parameter 32 R S5_CAL $end
+$var parameter 32 S S6_TX_RESULT $end
+$var wire 1 T clk $end
+$var wire 1 U reset $end
+$var wire 1 V nt $end
+$var wire 1 W xi [7] $end
+$var wire 1 X xi [6] $end
+$var wire 1 Y xi [5] $end
+$var wire 1 Z xi [4] $end
+$var wire 1 [ xi [3] $end
+$var wire 1 \ xi [2] $end
+$var wire 1 ] xi [1] $end
+$var wire 1 ^ xi [0] $end
+$var wire 1 _ yi [7] $end
+$var wire 1 ` yi [6] $end
+$var wire 1 a yi [5] $end
+$var wire 1 b yi [4] $end
+$var wire 1 c yi [3] $end
+$var wire 1 d yi [2] $end
+$var wire 1 e yi [1] $end
+$var wire 1 f yi [0] $end
+$var reg 1 g busy $end
+$var reg 1 h po $end
+$var wire 1 ( xo [7] $end
+$var wire 1 ) xo [6] $end
+$var wire 1 * xo [5] $end
+$var wire 1 + xo [4] $end
+$var wire 1 , xo [3] $end
+$var wire 1 - xo [2] $end
+$var wire 1 . xo [1] $end
+$var wire 1 / xo [0] $end
+$var wire 1 0 yo [7] $end
+$var wire 1 1 yo [6] $end
+$var wire 1 2 yo [5] $end
+$var wire 1 3 yo [4] $end
+$var wire 1 4 yo [3] $end
+$var wire 1 5 yo [2] $end
+$var wire 1 6 yo [1] $end
+$var wire 1 7 yo [0] $end
+$var reg 3 i curr_state [2:0] $end
+$var reg 3 j next_state [2:0] $end
+$var reg 1 k count_flag $end
+$var reg 32 l end_point_x [31:0] $end
+$var reg 32 m end_point_y [31:0] $end
+$var reg 3 n cnt [2:0] $end
+$upscope $end
+$upscope $end
+$enddefinitions $end
+#0
+$dumpvars
+1#
+0$
+0%
+bz &
+bz '
+bx H
+bx I
+bx J
+bx K
+bx L
+xg
+xh
+bx i
+bx j
+xk
+bx l
+bx m
+b0 n
+b0 M
+b1 N
+b10 O
+b11 P
+b100 Q
+b101 R
+b110 S
+b10010010100111000101110010001000100000101010100 !
+b1000101010110000101000001000101010000110101010000101110010001000100000101010100 "
+b0 :
+b0 ;
+b0 <
+b0 =
+bx >
+b10 ?
+b0 @
+b1 A
+b0 B
+bx C
+bx D
+bx E
+bx F
+bx G
+z/
+z.
+z-
+z,
+z+
+z*
+z)
+z(
+z7
+z6
+z5
+z4
+z3
+z2
+z1
+z0
+x8
+x9
+zf
+ze
+zd
+zc
+zb
+za
+z`
+z_
+z^
+z]
+z\
+z[
+zZ
+zY
+zX
+zW
+0V
+0U
+1T
+$end
+#5000
+0#
+0T
+1$
+1U
+b0 i
+b0 j
+1g
+0h
+0k
+19
+08
+#10000
+1#
+1T
+b0 C
+#14990
+0$
+0U
+b1 j
+#15000
+0#
+0T
+#20000
+1#
+1T
+b1 i
+b1 C
+b10 j
+0g
+09
+#25000
+0#
+0T
+b100 <
+#30000
+1#
+1T
+b10 i
+b10 C
+#35000
+0#
+0T
+1%
+1V
+b11 j
+#38000
+b1000001100 I
+b10 &
+b1100 '
+0f
+0e
+1d
+1c
+0b
+0a
+0`
+0_
+0^
+1]
+0\
+0[
+0Z
+0Y
+0X
+0W
+#40000
+1#
+1T
+b11 i
+b1 n
+bx00000010 l
+bx0000001000000000 l
+bx00001100 m
+bx0000110000000000 m
+b11 C
+#42000
+bz &
+bz '
+zf
+ze
+zd
+zc
+zb
+za
+z`
+z_
+z^
+z]
+z\
+z[
+zZ
+zY
+zX
+zW
+#45000
+0#
+0T
+0%
+0V
+#48000
+b100100001100 J
+b1001 &
+b1100 '
+0f
+0e
+1d
+1c
+0b
+0a
+0`
+0_
+1^
+0]
+0\
+1[
+0Z
+0Y
+0X
+0W
+#50000
+1#
+1T
+b10 n
+bx0000001000001001 l
+bx000000100000100100000000 l
+bx0000110000001100 m
+bx000011000000110000000000 m
+b100 C
+#52000
+bz &
+bz '
+zf
+ze
+zd
+zc
+zb
+za
+z`
+z_
+z^
+z]
+z\
+z[
+zZ
+zY
+zX
+zW
+#55000
+0#
+0T
+#58000
+b0 K
+b0 &
+b0 '
+0f
+0e
+0d
+0c
+0b
+0a
+0`
+0_
+0^
+0]
+0\
+0[
+0Z
