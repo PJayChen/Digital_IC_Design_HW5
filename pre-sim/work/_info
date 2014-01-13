@@ -19,16 +19,16 @@ Z9 !s90 -reportprogress|300|-work|work|C:/Users/P/Documents/GitHub/Digital_IC_De
 Z10 o-work work -O0
 !i10b 1
 !s85 0
-Z11 !s108 1389554111.721000
+Z11 !s108 1389617314.831000
 Z12 !s107 C:/Users/P/Documents/GitHub/Digital_IC_Design_HW5/pre-sim/testfixture.v|
 !s101 -O0
 vtrapezoid
 !i10b 1
-Z13 !s100 _:J4lUW<GZMHYUz@6a1mG1
-Z14 IhTd5=2jcYeF9gG:;zYY_k0
+Z13 !s100 JDiTL=WVhc8zcFfo=:o4P0
+Z14 I65kIiijn8b5nL`LdY3JZL2
 Z15 VnLU]ncMR900BWEzM`GBUd0
 R4
-Z16 w1389554108
+Z16 w1389617311
 Z17 8C:/Users/P/Documents/GitHub/Digital_IC_Design_HW5/pre-sim/trapezoid.v
 Z18 FC:/Users/P/Documents/GitHub/Digital_IC_Design_HW5/pre-sim/trapezoid.v
 L0 1
@@ -36,21 +36,21 @@ R8
 r1
 !s85 0
 31
-Z19 !s108 1389554111.799000
+Z19 !s108 1389617314.925000
 Z20 !s107 C:/Users/P/Documents/GitHub/Digital_IC_Design_HW5/pre-sim/trapezoid.v|
 Z21 !s90 -reportprogress|300|-work|work|C:/Users/P/Documents/GitHub/Digital_IC_Design_HW5/pre-sim/trapezoid.v|
 !s101 -O0
 R10
 vTrapezoid_Rendering
 !i10b 1
-!s100 T@I=1>8@nb1oJCg]JboGG2
-IH`Q3GA`ea>k>az9hP:IIi3
-V48n?XJ:Mf[<LP=^J7zMGU1
+!s100 TKH9Cz61GKM>8P>FO<8R33
+IE7<<ZK9<45D0C>;79C?PU3
+Z22 V48n?XJ:Mf[<LP=^J7zMGU1
 R4
 R16
 R17
 R18
-L0 133
+Z23 L0 128
 R8
 r1
 !s85 0
@@ -60,4 +60,4 @@ R20
 R21
 !s101 -O0
 R10
-n@trapezoid_@rendering
+Z24 n@trapezoid_@rendering

@@ -1,7 +1,8 @@
 module trapezoid (clk, reset, nt, xi, yi, busy, po, xo, yo);
 	input clk, reset, nt;
 	input [7:0] xi, yi;
-	output reg busy, po;
+	output po;
+	output reg busy;
 	output [7:0] xo, yo;
   
 	parameter S0_RST = 0, S1_WAIT = 1, S2_START = 2, S3_RX_ENDPOINT = 3, S4_PREPARE_CAL = 4, S5_CAL = 5, S6_TX_RESULT = 6;
@@ -22,7 +23,7 @@ module trapezoid (clk, reset, nt, xi, yi, busy, po, xo, yo);
 		end
 	end
 	
-	always@(curr_state or reset or nt or cnt)begin
+	always@(curr_state or reset or nt or cnt or finish)begin
 		case(curr_state)
 		S0_RST:
 			begin
@@ -66,40 +67,34 @@ module trapezoid (clk, reset, nt, xi, yi, busy, po, xo, yo);
 		S0_RST:
 			begin
 				busy = 1'd1;
-				po = 1'd0;
 				count_flag = 1'd0;
 			end
 		
 		S1_WAIT:
 			begin
 				busy = 1'd0;
-				po = 1'd0;
 				count_flag = 1'd0;
 			end
 		
 		S2_START:
 			begin
 				busy = 1'd0;
-				po = 1'd0;
 				count_flag = 1'd0;
 			end
 		
 		S3_RX_ENDPOINT:
 			begin
 				busy = 1'd0;
-				po = 1'd0;
 				count_flag = 1'd0;
 			end
 		S4_PREPARE_CAL:
 			begin
 				busy = 1'd1;
-				po = 1'd0;
 				count_flag = 1'd0;
 			end
 		S5_CAL:
 			begin
 				busy = 1'd1;
-				po = 1'd0;
 				count_flag = 1'd1;
 			end
 		S6_TX_RESULT:
@@ -137,7 +132,7 @@ module Trapezoid_Rendering(finish, po, xo, yo, clk, count_flag, point_x, point_y
 	input clk, count_flag;
 	input [31:0] point_x, point_y;
 
-	reg [17:0] dxl, dxr;
+	reg signed[17:0] dxl, dxr;
 	reg [17:0] xl, xr;
 	reg [7:0] end_x;
 	
@@ -147,12 +142,12 @@ module Trapezoid_Rendering(finish, po, xo, yo, clk, count_flag, point_x, point_y
 	parameter S0_RST = 0, S1_PAR_INIT = 1, S2_OUTER_LOOP = 2, S3_END_X_INIT = 3, S4_OUTPUT = 4, S5_INCRESE_SLOPE = 5, S6_FINISH = 6;
 	
 	always@(posedge clk or posedge count_flag)begin
-		if(count_flag) next_state = S1_PAR_INIT;
-		else next_state = S0_RST;
+		if(count_flag) curr_state = next_state;
+		else curr_state = S0_RST;
 	end
 	
 	
-	always@(curr_state)begin
+	always@(curr_state or j or i)begin
 		case(curr_state)
 			S0_RST:
 				begin
@@ -172,12 +167,12 @@ module Trapezoid_Rendering(finish, po, xo, yo, clk, count_flag, point_x, point_y
 				end
 			S4_OUTPUT:
 				begin
-					if(j > end_x) next_state = S5_INCRESE_SLOPE;
+					if(j >= end_x) next_state = S5_INCRESE_SLOPE;
 					else next_state = S4_OUTPUT;
 				end
 			S5_INCRESE_SLOPE:
 				begin
-					if(i <= point_y[31:23]) next_state = S3_END_X_INIT;
+					if(i[6:0] <= point_y[30:24]) next_state = S3_END_X_INIT;
 					else next_state = S6_FINISH;
 				end
 			S6_FINISH:
@@ -197,6 +192,7 @@ module Trapezoid_Rendering(finish, po, xo, yo, clk, count_flag, point_x, point_y
 					init_end_x = 0;
 					outdata = 0;
 					plus_slope = 0;
+					finish = 0;
 				end
 			S1_PAR_INIT:
 				begin
@@ -205,6 +201,7 @@ module Trapezoid_Rendering(finish, po, xo, yo, clk, count_flag, point_x, point_y
 					outdata = 0;
 					plus_slope = 0;
 					init_slope = 1;
+					finish = 0;
 				end
 			S2_OUTER_LOOP:
 				begin
@@ -213,6 +210,7 @@ module Trapezoid_Rendering(finish, po, xo, yo, clk, count_flag, point_x, point_y
 					outdata = 0;
 					plus_slope = 0;
 					init_i = 1;
+					finish = 0;
 				end
 			S3_END_X_INIT:
 				begin
@@ -221,6 +219,7 @@ module Trapezoid_Rendering(finish, po, xo, yo, clk, count_flag, point_x, point_y
 					outdata = 0;
 					plus_slope = 0;
 					init_end_x = 1;
+					finish = 0;
 				end
 			S4_OUTPUT:
 				begin
@@ -229,6 +228,7 @@ module Trapezoid_Rendering(finish, po, xo, yo, clk, count_flag, point_x, point_y
 					init_end_x = 0;
 					plus_slope = 0;
 					outdata = 1;
+					finish = 0;
 				end
 			S5_INCRESE_SLOPE:
 				begin
@@ -237,17 +237,35 @@ module Trapezoid_Rendering(finish, po, xo, yo, clk, count_flag, point_x, point_y
 					init_end_x = 0;
 					outdata = 0;
 					plus_slope = 1;
+					finish = 0;
+				end
+			S6_FINISH:
+				begin
+					init_slope = 0;
+					init_i = 0;
+					init_end_x = 0;
+					outdata = 0;
+					plus_slope = 0;
+					finish = 1;
 				end
 			default:;
 		endcase
 	end
 	
 	
-	
+	reg signed[17:0]tmp_x, tmp_y;
 	always@(posedge init_slope or posedge plus_slope)begin
 		if(init_slope)begin
-			dxl = (point_x[31:24] - point_x[15:8]) / (point_y[31:23]) - (point_y[15:8]);
-			dxr = (point_x[23:16] - point_x[7:0])  / (point_y[31:23]) - (point_y[15:8]);
+			tmp_x = (point_x[31:24] - point_x[15:8]) << 10;
+			tmp_y = (point_y[31:24] - point_y[15:8]);
+	
+			dxl = tmp_x / tmp_y;
+			
+			tmp_x = (point_x[23:16] - point_x[7:0]) << 10;
+			tmp_y = (point_y[31:24] - point_y[15:8]);
+			
+			dxr = tmp_x / tmp_y;
+				
 			xl = point_x[15:8] << 10;
 			xr = point_x[7:0] << 10;
 		end else if(plus_slope)begin
@@ -271,17 +289,37 @@ module Trapezoid_Rendering(finish, po, xo, yo, clk, count_flag, point_x, point_y
 //need to consider the sign number	
 	always@(posedge init_end_x)begin
 		if(init_end_x)begin
-			if(xl[7:0] == 8'd0) end_x = xr[17:10];
-			else if(xr[7:0] == 8'd0) end_x = xr[17:10] + 8'd1;
+			if(xl[9:0] == 10'd0) end_x = xr[17:10];  //xl is integer
+			else if(xr[9:0] == 10'd0) end_x = xr[17:10] + 8'd1; //xr is not integer
 			else begin
-				if(xr[9:0] != 8'd0) end_x = xr[17:10] + 8'd1;
-				else end_x = xr[17:10];
+				//if(xr[9:0] != 10'd0) end_x = xr[17:10] + 8'd1;
+				//else end_x = xr[17:10];
+				end_x = xr[17:10];
 			end
 		end
 	end
 	
-	always@(outdata)begin
+	always@(posedge clk)begin
+		//if(next_state == S5_INCRESE_SLOPE) po = 0;
+		if(outdata) po = 1;
+		else po = 0;
+	end
 	
+	always@(posedge clk or posedge init_end_x)begin
+		if(init_end_x) begin
+			if(i == (point_y[31:24] - point_y[15:8]) / 2) j = xl[17:10] + 1;
+			else if(i == point_y[31:24]) j = xl[17:10] + 1;
+			else j = xl[17:10];
+		end
+		else if(outdata)begin
+			xo = j;
+			yo = i;
+			j = j + 1;
+		end else begin
+			xo = xo;
+			yo = yo;
+			j = j;
+		end
 	end
 	
 endmodule
