@@ -132,8 +132,8 @@ module Trapezoid_Rendering(finish, po, xo, yo, clk, count_flag, point_x, point_y
 	input clk, count_flag;
 	input [31:0] point_x, point_y;
 
-	reg signed[17:0] dxl, dxr;
-	reg [17:0] xl, xr;
+	
+	
 	reg [7:0] end_x;
 	
 	reg [2:0] curr_state, next_state;
@@ -167,7 +167,8 @@ module Trapezoid_Rendering(finish, po, xo, yo, clk, count_flag, point_x, point_y
 				end
 			S4_OUTPUT:
 				begin
-					if(j >= end_x) next_state = S5_INCRESE_SLOPE;
+					if(j == 8'hff && end_x == 0) next_state = S4_OUTPUT;
+					else if(j >= end_x) next_state = S5_INCRESE_SLOPE;
 					else next_state = S4_OUTPUT;
 				end
 			S5_INCRESE_SLOPE:
@@ -252,25 +253,57 @@ module Trapezoid_Rendering(finish, po, xo, yo, clk, count_flag, point_x, point_y
 		endcase
 	end
 	
-	
-	reg signed[17:0]tmp_x, tmp_y;
+	reg [24:0] xl, xr;
+	reg signed[24:0] dxl, dxr;
+	reg signed [24:0]tmp_x, tmp_y;
+	reg signed [7:0] x1, x2, x3, x4, y1, y2, y3, y4;
+	reg signed [8:0] x_tmp, y_tmp;
 	always@(posedge init_slope or posedge plus_slope)begin
 		if(init_slope)begin
-			tmp_x = (point_x[31:24] - point_x[15:8]) << 10;
-			tmp_y = (point_y[31:24] - point_y[15:8]);
+			x1 = point_x[31:24];
+			x2 = point_x[23:16];
+			x3 = point_x[15:8];
+			x4 = point_x[7:0];
+			y1 = point_y[31:24];
+			y2 = point_y[23:16];
+			y3 = point_y[15:8];
+			y4 = point_y[7:0];
+			
+			x_tmp = (x1 - x3);  //additional one bit to prevent overflow
+			if(x1[7] == 0 && x3[7] == 1) tmp_x = {1'd0, x_tmp[7:0], 16'd0};
+			else tmp_x = {x_tmp, 16'd0};
+			//tmp_x = {x_tmp, 16'd0};
+			//tmp_x = (x1 - x3) << 10;
+			y_tmp = (y1 - y3);
+			if(y1[7] == 0 && y3[7] == 1) tmp_y = {17'd0, y_tmp[7:0]};
+			else tmp_y = {{16{y_tmp[7]}}, y_tmp}; //signed extension
+			//tmp_y = (y1 - y3);
 	
 			dxl = tmp_x / tmp_y;
 			
-			tmp_x = (point_x[23:16] - point_x[7:0]) << 10;
-			tmp_y = (point_y[31:24] - point_y[15:8]);
+			x_tmp = x2 - x4;
+			//tmp_x = { x_tmp, 16'd0};
+			if(x2[7] == 0 && x4[7] == 1) tmp_x = {1'd0, x_tmp[7:0], 16'd0};
+			else tmp_x = {x_tmp, 16'd0};
+			//tmp_x = (x2 - x4) << 10;
+			//tmp_y = (y1 - y3);
 			
 			dxr = tmp_x / tmp_y;
 				
-			xl = point_x[15:8] << 10;
-			xr = point_x[7:0] << 10;
+			xl = {x3[7], x3, 16'd0};//x3 << 10;
+			xr = {x4[7], x4, 16'd0};//x4 << 10;
 		end else if(plus_slope)begin
 			xl = xl + dxl;
 			xr = xr + dxr;	
+			if(xl[15:4] == 12'hfff) begin
+				xl[15:0] = 10'd0;
+				xl[24:16] = xl[24:16] + 1;
+			end
+			
+			if(xr[15:4] == 12'hfff) begin
+				xr[15:0] = 10'd0;
+				xr[24:16] = xr[24:16] + 1;
+			end
 		end else begin
 			dxl = dxl; 
 			dxr = dxr;
@@ -289,12 +322,12 @@ module Trapezoid_Rendering(finish, po, xo, yo, clk, count_flag, point_x, point_y
 //need to consider the sign number	
 	always@(posedge init_end_x)begin
 		if(init_end_x)begin
-			if(xl[9:0] == 10'd0) end_x = xr[17:10];  //xl is integer
-			else if(xr[9:0] == 10'd0) end_x = xr[17:10] + 8'd1; //xr is not integer
+			if(xl[15:0] == 16'd0) end_x = xr[24:16];  //xl is integer
+			else if(xr[15:0] == 16'd0) end_x = xr[24:16] + 8'd1; //xr is not integer
 			else begin
 				//if(xr[9:0] != 10'd0) end_x = xr[17:10] + 8'd1;
 				//else end_x = xr[17:10];
-				end_x = xr[17:10];
+				end_x = xr[24:16];
 			end
 		end
 	end
@@ -307,9 +340,11 @@ module Trapezoid_Rendering(finish, po, xo, yo, clk, count_flag, point_x, point_y
 	
 	always@(posedge clk or posedge init_end_x)begin
 		if(init_end_x) begin
-			if(i == (point_y[31:24] - point_y[15:8]) / 2) j = xl[17:10] + 1;
-			else if(i == point_y[31:24]) j = xl[17:10] + 1;
-			else j = xl[17:10];
+			//if(i == (point_y[31:24] - point_y[15:8]) / 2) j = xl[17:10] + 1;
+			//if(i == point_y[31:24]) j = xl[17:10] + 1; //upper bounder
+			//else if(i == (point_y[23:16] + point_y[7:0])) j = xl[17:10];
+			//else j = xl[17:10];
+			j = xl[24:16];
 		end
 		else if(outdata)begin
 			xo = j;
